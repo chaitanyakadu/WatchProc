@@ -12,13 +12,25 @@ WatchProc is a lightweight CLI tool, that provides real-time process information
 ## Functional Requirements
 The initial version (v0.1.0), will consist of only core details and the future development will add bunch of more parameters.
 
-The core features include:
+### Core Features
 - PID
-- Process name
+- Process Name
 - CPU %
 - Memory % (or RSS)
-- State (Running, Sleeping, Zombie, etc.)
-- Process command
+- Process State (Running, Sleeping, Zombie, etc.)
+- Command
+
+### Extended Metrics
+- User CPU Time
+- Kernel CPU Time
+- Total Threads
+- Start Time
+- Read Bytes (I/O)
+- Write Bytes (I/O)
+- Voluntary Context Switches
+- Non-voluntary Context Switches
+- Total Execution Runtime
+- Number of Context Switches
 
 ---
 ## Options
