@@ -41,8 +41,8 @@ The initial version (v0.1.0), will consist of only core details and the future d
 
 ### Examples
 ```
-watchproc <process_name | PID> [options]
+watchproc.sh <process_name | PID> [options]
 
-watchproc cargo
-watchproc 1234 -i 2 
+watchproc.sh cargo
+watchproc.sh 1234 -i 2 
 ```

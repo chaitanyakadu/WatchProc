@@ -15,15 +15,15 @@ function verify_pid {
 }
 
 # get pid using process name
-function get_proc_id {
+function get_pid {
   # collect proc name
   proc_name=$1
   if [[ -z $proc_name ]]; then 
-    tput setaf 1; printf "The get_proc_id function is called without providing the process name\n"; tput sgr0;
+    tput setaf 1; printf "The get_pid function is called without providing the process name\n"; tput sgr0;
   fi
 
   # is there any active process
-  active_count=$(pgrep -c $proc_name)
+  active_count=$(pgrep -c "$proc_name")
   if [[ $active_count -eq 0 ]]; then
     tput setaf 3; printf "There is no $proc_name process currently active\n"; tput sgr0;
     exit 1
@@ -43,7 +43,6 @@ function get_proc_id {
   # set the pid if active process is 1
   if [[ $active_count -eq 1 ]]; then
     pid=$(pgrep $proc_name)
-    echo $pid
   else 
     tput setaf 2; printf "Unknown Error! The $proc_name process has unexpected active count\n"; tput sgr0;
     exit 1
@@ -62,10 +61,14 @@ function help_data {
 
 
 # Start..
-pid=$1 
+value=$1 
 
-if [ ! -z $pid ]; then
+if [[ $value =~ [a-zA-Z] ]]; then
+  get_pid $value
   verify_pid $pid
+  shift
+elif [ ! -z $value ]; then
+  verify_pid $value
   shift
 else 
   tput setaf 3; printf "Process name or PID is missing!\n"; tput sgr0;
