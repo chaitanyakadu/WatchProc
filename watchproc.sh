@@ -94,15 +94,43 @@ done
 
 # print metrics
 function print_metrics {
-  read cpu mem state cmd < <(ps -p $pid -o %cpu,%mem,state,cmd --no-headers)
-  printf "%-10s %-10s %-10s\n" "PID" $pid
-  printf "%-10s %-10s %-10s\n" "%CPU" $cpu
-  printf "%-10s %-10s %-10s\n" "%MEM" $mem
-  printf "%-10s %-10s %-10s\n" "State" $state
-  printf "%-10s %-10s %-10s\n" "CMD" $cmd
-}
+  read cpu mem cmd < <(ps -p $pid -o %cpu,%mem,cmd --no-headers)
+  read user_time kernel_time total_threads start_time < <(cat "/proc/$pid/stat" | awk -F' ' '{print $14, $15, $20, $22}')
+  read read_bytes < <(sudo cat "/proc/$pid/io" | awk -F':' '/^read_bytes/ {print $2}')
+  read write_bytes < <(sudo cat "/proc/$pid/io" | awk -F':' '/^write_bytes/ {print $2}')
+  read name < <(cat "/proc/$pid/status" | awk -F':' '/^Name/ {print $2}')
+  read state < <(cat "/proc/$pid/status" | awk -F':' '/^State/ {print $2}')
+  read vctx < <(cat "/proc/$pid/status" | awk -F':' '/^voluntary_ctxt_switches/ {print $2}')
+  read nvctx < <(cat "/proc/$pid/status" | awk -F':' '/^nonvoluntary_ctxt_switches/ {print $2}')
+  read sum_exec_runtime < <(cat "/proc/$pid/sched" | awk -F':' '/^se.sum_exec_runtime / {print $2}')
+  read nr_switches < <(cat "/proc/$pid/sched" | awk -F':' '/^nr_switches / {print $2}')
 
-tput civis
+  declare -A metrics_arr
+  metrics_arr["PID"]="$pid"
+  metrics_arr["%CPU"]="$cpu"
+  metrics_arr["%MEM"]="$mem"
+  metrics_arr["CMD"]="$cmd"
+
+  metrics_arr["USER_TIME"]="$user_time"
+  metrics_arr["KERNEL_TIME"]="$kernel_time"
+  metrics_arr["THREADS"]="$total_threads"
+  metrics_arr["START_TIME"]="$start_time"
+
+  metrics_arr["READ_BYTES"]="$read_bytes"
+  metrics_arr["WRITE_BYTES"]="$write_bytes"
+
+  metrics_arr["NAME"]="$name"
+  metrics_arr["STATE"]="$state"
+  metrics_arr["VOLUNTARY_CTX"]="$vctx"
+  metrics_arr["NONVOLUNTARY_CTX"]="$nvctx"
+
+  metrics_arr["SUM_EXEC_RUNTIME"]="$sum_exec_runtime"
+  metrics_arr["NR_SWITCHES"]="$nr_switches"
+
+  for i in "${!metrics_arr[@]}"; do 
+    printf "%-20s %-20s %-20s\n" "$i" "${metrics_arr[$i]}"
+  done
+}
 
 while true; do 
   tput clear
@@ -110,4 +138,3 @@ while true; do
 
   sleep $interval
 done
-
