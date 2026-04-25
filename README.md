@@ -46,3 +46,8 @@ watchproc.sh <process_name | PID> [options]
 watchproc.sh cargo
 watchproc.sh 1234 -i 2 
 ```
+
+### Preview
+CMD - watchproc.sh 1758 -i 5
+![Preview](https://i.postimg.cc/DzbQrnWY/ss-20260426-004827.png)
+

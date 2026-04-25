@@ -130,8 +130,9 @@ function print_metrics {
   metrics_arr["SUM_EXEC_RUNTIME"]="$sum_exec_runtime"
   metrics_arr["NR_SWITCHES"]="$nr_switches"
 
+  printf "Last Updated: %s\n" "$(date +"%Y-%m-%d %H:%M:%S")"
   for i in "${!metrics_arr[@]}"; do 
-    printf "%-20s %-20s %-20s\n" "$i" "${metrics_arr[$i]}"
+    printf "\033[34m%-20s\033[0m %-20s\n" "$i" "${metrics_arr[$i]}"
   done
 }
 
